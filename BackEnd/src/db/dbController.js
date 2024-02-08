@@ -1,26 +1,32 @@
 //Here we make a connection with the database
 
-const { Pool } = require('pg');
+const  sql  = require('mssql');
 
 
 //these values are stored on render db which is gonna be temp till we find a better place to host
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'SkillsBurstdb',
-    password: "Adriver13",
-    port: 5432,
-});
+const config  = {
+    user: 'skills_admin',
+    server: 'skillsburst.database.windows.net',
+    database: 'skillsdb ',
+    password: "password'1",
+    options: {
+        encrypt: true,
+    }
+  
+};
 
 
-pool.on('connect',()=> {
-    console.log('Connected Properly')
-})
-// module.exports = pool;
-
+function connectToDatabase() {
+  try {
+      const pool =  sql.connect(config);
+      console.log('Connected successfully');
+      return pool;
+  } catch (err) {
+      console.error(err.message);
+      throw err;
+  }
+}
 
 module.exports = {
-    pool,
-    query: (text, params) => pool.query(text, params)
-    // [name of query set ie loginQueries] : queries.[name of query]
+  connectToDatabase,
 };

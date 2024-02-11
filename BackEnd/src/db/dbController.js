@@ -18,14 +18,24 @@ const config  = {
 };
 
 
-function connectToDatabase() {
+async function connectToDatabase() {
   try {
-      const pool =  sql.connect(config);
-      console.log('Connected successfully');
-      return pool;
+    const pool = await sql.connect(config);
+    console.log('Connected successfully');
+
+    // Assuming you want to wait for the query to complete before returning the pool
+    const result = await pool.request().query('SELECT * FROM skillsb_test');
+    console.log(result);
+    const result2 = await pool.request().query("DELETE FROM skillsb_test where name='DERRICK'");
+    const result3 = await pool.request().query('SELECT * FROM skillsb_test');
+    //const result2 = await pool.request().query(insert skillsb_test (name ,age) values ('DERRICK' , 65)
+    console.log(result3);
+    //console.log(result2);
+
+    return pool;
   } catch (err) {
-      console.error(err.message);
-      throw err;
+    console.error(err.message);
+    throw err;
   }
 }
 

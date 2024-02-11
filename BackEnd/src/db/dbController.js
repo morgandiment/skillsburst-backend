@@ -2,6 +2,8 @@
 
 const  sql  = require('mssql');
 
+// oeyeyeyyeyeyeyeyeyye
+
 
 //these values are stored on render db which is gonna be temp till we find a better place to host
 const config  = {

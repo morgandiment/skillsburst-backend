@@ -11,8 +11,6 @@ router.get('/testconnection', (req, res) => {
     console.log('Sucess')
 });
 
-router.get('/testquery', (req,res) => {
-    
-})
+
 
 module.exports = router;

@@ -12,3 +12,5 @@ app.use('/',Routes);
 app.listen(port  , () => {
     console.log(`Server is ran on ${port}`);
 });
+
+app.post

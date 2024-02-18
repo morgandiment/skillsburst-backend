@@ -2,7 +2,6 @@
 
 const  sql  = require('mssql');
 
-
 //these values are stored on render db which is gonna be temp till we find a better place to host
 const config  = {
     user: 'skills_admin',
@@ -18,10 +17,12 @@ const config  = {
 
 function connectToDatabase() {
   try {
-      const pool =  sql.connect(config);
+      const pool =   sql.connect(config);
       console.log('Connected successfully');
+      // let test = pool.request().query(`SELECT * FROM skillsb_test`);
+      // console.log(test)
       return pool;
-  } catch (err) {
+  } catch (err) { 
       console.error(err.message);
       throw err;
   }

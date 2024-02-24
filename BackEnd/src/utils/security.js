@@ -10,8 +10,7 @@ async function encrypt(value) {
 
 async function hashMatch(value , hash) {
     let isMatch = await bcrypt.compare(value,hash)
-    return isMatch
-     
+    return isMatch;
 } 
 
 module.exports = { encrypt, hashMatch };

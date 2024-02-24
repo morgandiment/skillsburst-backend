@@ -2,11 +2,13 @@
 const emailValidator = require('deep-email-validator');
 const db = require('../db/dbController');
 
+
 //Using Deep Email Validator To validate Email https://www.abstractapi.com/guides/node-email-validation#:~:text=Node%20email%20validation.-,How%20Do%20I%20Check%20if%20An%20Email%20is%20Valid%20in,and%20the%20SMTP%20server%20response.
 async function isEmailValid(email) {
     return emailValidator.validate(email)
 }
   
+
 async function checkUserExists(Username, Email, PhoneNumber) {
     try {
       // Create a SQL query to check if the username already exists

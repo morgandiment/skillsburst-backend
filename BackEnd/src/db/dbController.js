@@ -11,7 +11,6 @@ const config  = {
     options: {
         encrypt: true,
     }
-  
 };
 
 

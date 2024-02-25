@@ -1,6 +1,10 @@
 const db = require('../db/dbController');
-const { encrypt, hashMatch } = require('../utils/security');
-const { isEmailValid, checkUserExists } = require('../utils/validation');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { hashMatch } = require('../utils/security');
+const { isEmailValid } = require('../utils/validation');
+const AsyncStorage = require('@react-native-async-storage/async-storage');
+
 
 async function verify_login (req,res){
     try {
@@ -15,16 +19,25 @@ async function verify_login (req,res){
             }
         }
 
-        const query = `SELECT * FROM Users WHERE (Username = '${Value}' OR Email = '${Value}')`;
+        const retrieveQuery = `SELECT * FROM Users WHERE (Username = '${Value}' OR Email = '${Value}')`;
         const pool = await db.connectToDatabase();
-        const result = await pool.request().query(query);
+        const result = await pool.request().query(retrieveQuery);
 
         if (result.recordset.length > 0) {
-            const existingUser = result.recordset[0];
-            console.log(existingUser.PasswordHash)
-            const passwordHash = await hashMatch(Password, existingUser.PasswordHash);
+            const userDetails = result.recordset[0];
+            const passwordHash = await hashMatch(Password, userDetails.PasswordHash);
             if (passwordHash){
-                res.json({ data: existingUser, message: 'Login successful'});
+                let UserKey = generateUniqueKey(userDetails.UserID);
+                while (await checkUserKeyExists(UserKey, pool)) {
+                    UserKey = generateUniqueKey(userDetails.UserID);
+                }
+                const insertQuery = `INSERT INTO UsersSession (SessionID , UserID, SessionTime)
+                VALUES ('${UserKey}','${userDetails.UserID}', DATEADD(minute, 20, GETDATE()))`;
+                let finalresult = await pool.request().query(insertQuery);
+
+                await AsyncStorage.setItem('jwtToken', UserKey);
+                
+                res.json({ data: userDetails, message: 'Login successful'});
             }
             else{
                 console.error('The password entered does not match the username/email entered:', error.message);
@@ -41,6 +54,21 @@ async function verify_login (req,res){
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+
+async function checkUserKeyExists(finalKey, pool) {
+    const query = `SELECT * FROM UsersSession WHERE SessionID = '${finalKey}'`;
+    const result = await pool.request().query(query);
+    return result.recordset.length > 0;
+}
+  
+
+function generateUniqueKey(finalID) {
+    const key = crypto.randomBytes(32).toString('hex');
+    const token = jwt.sign({ userId: finalID }, key);
+    return token;
+}
+
 
 module.exports = {
     verify_login,

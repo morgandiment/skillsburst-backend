@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const  {verify_login}  = require('../controllers/loginController')
+const  {LoginUser}  = require('../controllers/loginController')
 
-router.get('/verifyLogin', async (req, res) => {
-    console.log('dgsgsdgds')
-    // Assuming verify_login is an asynchronous function, you can await it
-    await verify_login(req, res);
+
+router.post('/LoginUser', async (req, res) => {
+   // console.log(req.body)
+    await LoginUser(req, res);
 });
 
 

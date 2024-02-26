@@ -10,7 +10,7 @@ async function isEmailValid(email) {
 async function checkUserExists(Username, Email, PhoneNumber) {
     try {
       // Create a SQL query to check if the username already exists
-      const query = `SELECT * FROM Users WHERE Username = '${Username}' OR Email = '${Email}' OR PhoneNumber = '${PhoneNumber}'`;
+      const query = `SELECT * FROM Users WHERE Username = '${Username}' OR Email = '${Email}' `;
   
       // Execute the query
       const pool = await db.connectToDatabase();
@@ -23,8 +23,6 @@ async function checkUserExists(Username, Email, PhoneNumber) {
           return { field: 'Username', exists: true };
         } else if (existingUser.Email === Email) {
           return { field: 'Email', exists: true };
-        } else if (existingUser.PhoneNumber === PhoneNumber) {
-          return { field: 'PhoneNumber', exists: true };
         }
       }
   

@@ -4,6 +4,14 @@ const router = express.Router();
 const dataRoutes = require('./dataRoutes');
 const loginRoutes = require('./loginRoutes')
 const registerRoutes = require('./registerRoutes')
+const bodyParser = require('body-parser');
+router.use(bodyParser.json());
+
+
+const { checkSessionTime } = require('../utils/tokens');
+
+
+
 
 //data routes
 router.use('/data',dataRoutes);

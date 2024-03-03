@@ -10,19 +10,19 @@ async function LoginUser (req,res){
     try {
         const {User ,Password} = req.body;
         console.log( req.body,'asefdaf');
-        if (User.includes('@')) {
-            const {valid} = await isEmailValid(User);
-            if (!valid) {
-                return res.status(400).send({
-                    message: 'Please provide a valid email address.'
-                });
-            }
-        }
+        // if (User.includes('@')) {
+        //     const {valid} = await isEmailValid(User);
+        //     if (!valid) {
+        //         return res.status(400).send({
+        //             message: 'Please provide a valid email address.'
+        //         });
+        //     }
+        // }
 
         const query = `SELECT * FROM Users WHERE (Username = '${User}' OR Email = '${User}')`;
         const pool = await db.connectToDatabase();
         const result = await pool.request().query(query);
-
+        
         console.log(result)
         if (result.recordset.length > 0) {
             const userDetails = result.recordset[0];
@@ -45,29 +45,62 @@ async function LoginUser (req,res){
                 console.log(UserKey ,'ni')
                 // await AsyncStorage.setItem('jwtToken', UserKey);
                 console.log(UserKey ,'234')
-                pool.close()
+                await pool.close()
                 res.status(200).json({ data: userDetails, message: 'Login successful' , token :UserKey });
-                console.log('we did it') 
+               
             }
             else{
             //    console.error('The password entered does not match the username/email entered:', error.message);
+                
+               await pool.close()
                return res.status(400).send({
                     message: 'The password entered does not match the username/email entered'
                });
             }
         } else {
             console.log('nope')
+            await pool.close()
          //   console.error('The username/email has been entered incorrectly or do not exist in the database:', error.message);
             return res.status(400).send({
                 message: 'The username/email has been entered incorrectly or do not exist in the database'
             });
         }
-        // pool.close();
+        await pool.close();
 
     } catch (error) {
      //   console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+}
+
+async function checkToken(req,res){
+    try {
+        const {token} = req.body;
+        console.log('yooooooooo')
+
+        console.log(token)
+        //const query = `SELECT * FROM Users WHERE (Username = '${User}' OR Email = '${User}')`;
+        const query = `SELECT * FROM Users WHERE UserID IN (SELECT UserID FROM UsersSession WHERE SessionID = '${token}' )`;
+        const pool = await db.connectToDatabase();
+        console.log(query)
+        const result = await pool.request().query(query);
+        console.log(result)
+        console.log('SAFGRSD')
+        
+        console.log(pool,'112')
+        await pool.close()
+        if (pool) {
+            console.log(pool,'221')
+            console.log('wahts up');
+        } else {
+            console.log('i closed bro')
+        }
+        res.status(200).json({ data: result.recordset[0] });
+               
+    } catch (error) {
+           console.error(error);
+           res.status(500).json({ error: 'Internal Server Error' });
+    } 
 }
 async function checkUserKeyExists(finalKey, pool) {
     const query = `SELECT * FROM UsersSession WHERE SessionID = '${finalKey}'`;
@@ -87,5 +120,5 @@ function generateUniqueKey(finalID) {
 
 
 module.exports = {
-    LoginUser,
+    LoginUser,checkToken
 };

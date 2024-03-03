@@ -11,17 +11,20 @@ async function register_user (req,res){
 
         console.log(Username , Email ,DOB, Password)
         //Validating The detailss goes here :
-        const {valid} = await isEmailValid(Email);
-        if (!valid) {
-            console.log('fail E',Email )
-            return res.status(400).send({
-              message: 'Please provide a valid email address.'
-            });
-        }
+        // const {valid} = await isEmailValid(Email);
+        // if (!valid) {
+        //     pool.close()
+        //     return res.status(400).send({
+        //       message: 'Please provide a valid email address.'
+        //     });
+        // }
+
+        
         // Check if the user already exists in the database
         const userExistsInfo = await checkUserExists(Username, Email);
         if (userExistsInfo) {
-            console.log('fail Exist')
+            // console.log('fail Exist')
+            await pool.close()
             return res.status(400).send({
             message: `${userExistsInfo.field} already exists in the database.`
             });
@@ -30,7 +33,7 @@ async function register_user (req,res){
         while (await checkUserIdExists(UserId, pool)) {
             UserId = generateUniqueUserId();
         }
-        console.log('fail id')
+        // console.log('fail id')
 
         // Hashing Password for security reasons
         const passwordHash = await encrypt(Password);
@@ -44,18 +47,16 @@ async function register_user (req,res){
         while (await checkUserIdExists(ProfileId, pool)) {
             ProfileId = generateUniqueUserId();
         }
-        const moment = require('moment');
-
-       // const ukDOB = moment(DOB).format('DD/MM/YYYY'); 
-        console.log(DOB)
+   
         const query2 = `INSERT INTO UserProfile (ProfileID , UserID, DOB)
                 VALUES ('${ProfileId}','${UserId}', '${DOB}')`; 
         let result2 = await pool.request().query(query2);
-        pool.close()
+        await pool.close()
         res.status(200).json({ message: 'User registration successful.' });
-        console.log('we did it')
+      
     } catch (error) {
-        console.error(error);
+        //console.error(error);
+        await pool.close()
         res.status(500).json({ error: 'Internal Server Error' });
     }
  

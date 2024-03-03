@@ -15,17 +15,18 @@ async function checkUserExists(Username, Email, PhoneNumber) {
       // Execute the query
       const pool = await db.connectToDatabase();
       const result = await pool.request().query(query);
-  
+      await pool.close()
       // Check if any matching records were found
       if (result.recordset.length > 0) {
         const existingUser = result.recordset[0];
+        pool.close()
         if (existingUser.Username === Username) {
           return { field: 'Username', exists: true };
         } else if (existingUser.Email === Email) {
           return { field: 'Email', exists: true };
         }
       }
-  
+      
       // If no matching records were found, return null
       return null;
     } catch (error) {

@@ -10,6 +10,7 @@ async function checkSessionTime() {
         const pool = await db.connectToDatabase();
         const query = `SELECT SessionTime FROM UsersSession WHERE SessionID = '${TokenExists}'`;
         const result = await pool.request().query(query);
+        await pool.close()
         if (result.recordset.length > 0) {
             const sessionTime = result.recordset[0].SessionTime;
             const currentTime = new Date();

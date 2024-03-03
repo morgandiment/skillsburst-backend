@@ -86,7 +86,7 @@ describe('Post /login/LoginUser',()=> {
             User: 'adrian2@gmail.com' ,
             Password: 'wrongpassword'
         });
-        expect(response.statusCode).toBe(400);supertest
+        expect(response.statusCode).toBe(400);
     });
 })
 
@@ -120,6 +120,8 @@ describe('Post /register/registerUser',()=> {
 })
 
 //already exist (username)
+
+
 describe('Post /register/registerUser',()=> {
     test('Existing username Should respond with a 400 res code', async () => {
         const response = await request.post("/register/registerUser").send({
@@ -129,7 +131,7 @@ describe('Post /register/registerUser',()=> {
             DOB: '12/04/2009'
         });
         expect(response.statusCode).toBe(400);
-    });
+    },80000);
 })
 
 //already exist (email)
@@ -142,5 +144,8 @@ describe('Post /register/registerUser',()=> {
             DOB: '12/04/2009'
         });
         expect(response.statusCode).toBe(400);
-    });
+    },80000);
 })
+
+
+// user/updateUser

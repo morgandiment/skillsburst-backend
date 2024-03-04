@@ -147,5 +147,32 @@ describe('Post /register/registerUser',()=> {
     },80000);
 })
 
+//Profile update
 
-// user/updateUser
+//successful user profile update (phone correct format)
+describe('Post /user/updateUser', ()=> {
+    test('VALID profile update should respond with a 200 res code', async () => {
+        const response = await request.post("/user/updateUser").send({
+            UserID: '354286',
+            DOB: '26/02/2010',
+            PhoneNumber: '07771 234567',
+            FirstName: 'Jake',
+            LastName: 'Test'
+        });
+        expect(response.statusCode).toBe(200);
+    }, 80000);
+})
+
+//unsuccessful user profile update (phone incorrect format)
+describe('Post /user/updateUser', ()=> {
+    test('INVALID profile update should respond with a 400 res code', async () => {
+        const response = await request.post("/user/updateUser").send({
+            UserID: '663229',
+            DOB: '26/02/2000',
+            PhoneNumber: '10',
+            FirstName: '',
+            LastName: ''
+        });
+        expect(response.statusCode).toBe(400);
+    }, 80000);
+})

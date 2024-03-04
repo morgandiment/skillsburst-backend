@@ -1,28 +1,32 @@
+const db = require('../db/dbController');
+
 async function UpdateProfile (req,res){
     const {UserID ,DOB, PhoneNumber,FirstName,LastName} = req.body;
-    
+
     try {
+        console.log('ooo changing profile')
 
-        //validation
-        //presence check , all checks are done
+        //phone number validation - UK format with +44 or 0
+        if (PhoneNumber) {
+            var regex = /^(?:\+?44)?(?:0|\(0\))?\s?7\d{3}\s?\d{6}$/;
+            if (!regex.test(PhoneNumber)) {
+                return res.status(400).send({
+                    message: 'The phone number is in the incorrect format.'
+                });
+            }
+        }
 
-        //do the check if real phone number exists
-        //CHANGE THIS TO UPDATE 
-        //UPDATE THE UserProfile Table
-
-
-        res.status(400).json({ message: 'Ua.' });
-
-        const query = `SELECT * FROM Users WHERE (Username = '${User}' OR Email = '${User}')`;
+        //updates database
+        const query = `UPDATE UserProfile SET DOB = '${DOB}', PhoneNumber = '${PhoneNumber}', FirstName = '${FirstName}', LastName = '${LastName}' WHERE UserID = '${UserID}'`;
         const pool = await db.connectToDatabase();
         const result = await pool.request().query(query);
-        
-        res.status(200).json({ message: 'User registration successful.' });
+        console.log(result)
+        await pool.close()
+        res.status(200).json({ message: 'Profile update successful.' });
     } catch (error) {
-
+            console.error(error);
            res.status(500).json({ error: 'Internal Server Error' });
     }
-
 
 }
 

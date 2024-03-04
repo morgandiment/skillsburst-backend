@@ -6,3 +6,5 @@ router.post('/updateUser', async (req, res) => {
     // console.log(req.body)
      await UpdateProfile(req, res);
  });
+
+ module.exports = router;

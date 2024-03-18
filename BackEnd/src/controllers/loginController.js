@@ -54,6 +54,7 @@ async function LoginUser (req,res){
                 
                await pool.close()
                return res.status(400).send({
+                    errType: 'password',
                     message: 'The password entered does not match the username/email entered'
                });
             }
@@ -62,6 +63,7 @@ async function LoginUser (req,res){
             await pool.close()
          //   console.error('The username/email has been entered incorrectly or do not exist in the database:', error.message);
             return res.status(400).send({
+                errType: 'username',
                 message: 'The username/email has been entered incorrectly or do not exist in the database'
             });
         }

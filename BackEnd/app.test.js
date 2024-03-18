@@ -97,8 +97,8 @@ describe('Post /login/LoginUser',()=> {
 // describe('Post /register/registerUser',()=> {
 //     test('Valid details Should respond with a 200 res code', async () => {
 //         const response = await request.post("/register/registerUser").send({
-//             Username: 'morgan4', 
-//             Email: 'adrian2@gmail.com' , 
+//             Username: 'morgan34', 
+//             Email: 'adrian5@gmail.com' , 
 //             Password: 'bigjimmy1' , 
 //             DOB: '12/04/2009'
 //         });

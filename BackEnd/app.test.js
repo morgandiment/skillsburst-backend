@@ -147,10 +147,6 @@ describe('Post /register/registerUser',()=> {
     },80000);
 })
 
-
-// user/updateUser
-
-
 //Profile update
 
 //successful user profile update (phone correct format)

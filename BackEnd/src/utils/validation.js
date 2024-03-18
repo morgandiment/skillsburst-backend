@@ -19,7 +19,7 @@ async function checkUserExists(Username, Email, PhoneNumber) {
       // Check if any matching records were found
       if (result.recordset.length > 0) {
         const existingUser = result.recordset[0];
-        
+        pool.close()
         if (existingUser.Username === Username) {
           return { field: 'Username', exists: true };
         } else if (existingUser.Email === Email) {
